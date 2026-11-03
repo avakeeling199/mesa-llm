@@ -37,6 +37,7 @@ class STLTMemory(Memory):
         llm_model: str | None = None,
         api_base: str | None = None,
         additive_event_types: list[str] | set[str] | tuple[str, ...] | None = None,
+        completion_kwargs: dict | None = None,
     ):
         """
         Initialize the memory
@@ -61,6 +62,7 @@ class STLTMemory(Memory):
             api_base=api_base,
             display=display,
             additive_event_types=additive_event_types,
+            completion_kwargs=completion_kwargs,
         )
 
         self.capacity = short_term_capacity

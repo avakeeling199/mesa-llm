@@ -26,6 +26,7 @@ class LongTermMemory(Memory):
         llm_model: str = "openai/gpt-4o-mini",
         api_base: str | None = None,
         additive_event_types: list[str] | set[str] | tuple[str, ...] | None = None,
+        completion_kwargs: dict | None = None,
     ):
         """
         Initialize long-term memory.
@@ -50,6 +51,7 @@ class LongTermMemory(Memory):
             api_base=api_base,
             display=display,
             additive_event_types=additive_event_types,
+            completion_kwargs=completion_kwargs,
         )
 
         self.long_term_memory = ""

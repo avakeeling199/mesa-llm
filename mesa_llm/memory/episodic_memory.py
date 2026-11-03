@@ -71,6 +71,7 @@ class EpisodicMemory(Memory):
         considered_entries: int = 30,
         recency_decay: float = 0.995,
         api_base: str | None = None,
+        completion_kwargs: dict | None = None,
     ):
         """
         Initialize the EpisodicMemory.
@@ -94,6 +95,7 @@ class EpisodicMemory(Memory):
             llm_model=llm_model,
             api_base=api_base,
             display=display,
+            completion_kwargs=completion_kwargs,
         )
 
         self.max_capacity = max_capacity

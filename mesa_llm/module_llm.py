@@ -42,6 +42,7 @@ class ModuleLLM:
         llm_model: str,
         api_base: str | None = None,
         system_prompt: str | None = None,
+        completion_kwargs: dict | None = None,
     ):
         """
         Initialize the LLM module
@@ -51,6 +52,9 @@ class ModuleLLM:
                 "{provider}/{model}" (for example, "openai/gpt-4o").
             api_base: The API base to use if the LLM provider is Ollama
             system_prompt: The system prompt to use for the LLM
+            completion_kwargs: Sampling parameters to be passed to the LLM
+                such as temperature and seed. Internal keys take priority
+                and seed support depends on provider.
 
         Raises:
             ValueError: If llm_model is not in the expected "{provider}/{model}"
@@ -59,6 +63,7 @@ class ModuleLLM:
         self.api_base = api_base
         self.llm_model = llm_model
         self.system_prompt = system_prompt
+        self.completion_kwargs = dict(completion_kwargs or {})
 
         if "/" not in llm_model:
             raise ValueError(
@@ -207,7 +212,8 @@ class ModuleLLM:
         suppress_thinking: bool,
     ) -> dict:
         completion_kwargs = {
-            "model": self.llm_model,
+            **self.completion_kwargs,  # user sampling setting
+            "model": self.llm_model,  # internal keys always win
             "messages": messages,
             "tools": tool_schema,
             "tool_choice": tool_choice if tool_schema else None,

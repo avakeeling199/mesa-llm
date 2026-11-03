@@ -39,6 +39,7 @@ class SugarScapeModel(Model):
         llm_model: str,
         vision: int,
         api_base: str | None = None,
+        completion_kwargs: dict | None = None,
         seed=None,
     ):
         super().__init__(seed=seed)
@@ -115,6 +116,7 @@ class SugarScapeModel(Model):
             internal_state=None,
             step_prompt="Observe your inventory and MRS. Move to the best resource or propose a trade.",
             api_base=api_base,
+            completion_kwargs=completion_kwargs,
         )
 
         x_pos = self.rng.integers(0, self.grid.width, size=(initial_traders,))

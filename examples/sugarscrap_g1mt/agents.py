@@ -19,6 +19,7 @@ class Trader(LLMAgent, mesa.discrete_space.CellAgent):
         metabolism_sugar=1,
         metabolism_spice=1,
         api_base=None,
+        completion_kwargs=None,
     ):
         super().__init__(
             model=model,
@@ -30,6 +31,7 @@ class Trader(LLMAgent, mesa.discrete_space.CellAgent):
             step_prompt=step_prompt,
             api_base=api_base,
             actions=["move_to_best_resource", "propose_trade"],
+            completion_kwargs=completion_kwargs,
         )
         self.sugar = sugar
         self.spice = spice
@@ -44,6 +46,7 @@ class Trader(LLMAgent, mesa.discrete_space.CellAgent):
             display=True,
             llm_model=llm_model,
             api_base=api_base,
+            completion_kwargs=completion_kwargs,
         )
 
         self.system_prompt = (

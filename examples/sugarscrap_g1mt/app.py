@@ -40,6 +40,7 @@ model_params = {
     "reasoning": ReActReasoning,
     "llm_model": "gemini/gemini-2.5-flash",
     "api_base": None,
+    "completion_kwargs": {"temperature": 0.3, "seed": 33},
     "vision": 5,
 }
 
@@ -53,6 +54,7 @@ model = SugarScapeModel(
     vision=model_params["vision"],
     api_base=model_params["api_base"],
     seed=model_params["seed"]["value"],
+    completion_kwargs=model_params["completion_kwargs"],
 )
 
 

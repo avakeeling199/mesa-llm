@@ -317,6 +317,8 @@ class Memory(ABC):
                 ``{"message", "action"}``. For example, ``message`` and
                 ``action`` accumulate by default, while ``observation`` and
                 ``plan`` overwrite unless explicitly included here.
+            completion_kwargs : extra arguments passed to the LLM, such as
+                ``temperature`` or ``seed``, used when summarizing memory
         """
         self.agent = agent
         if llm_model:

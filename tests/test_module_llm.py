@@ -585,3 +585,61 @@ class TestModuleLLM:
 
         with pytest.raises(ValueError, match="Invalid or unsupported model"):
             await llm.agenerate(prompt="Hello, how are you?")
+
+    def test_generate_passes_completion_kwargs(self, monkeypatch, llm_response_factory):
+        captured = {}
+
+        def _dummy_completion(**kwargs):
+            captured.update(kwargs)
+            return llm_response_factory()
+
+        monkeypatch.setattr("mesa_llm.module_llm.completion", _dummy_completion)
+        llm = ModuleLLM(
+            llm_model="openai/gpt-4o",
+            completion_kwargs={"temperature": 0.3, "seed": 42},
+        )
+        llm.generate(prompt="Hello")
+        assert captured["temperature"] == 0.3
+        assert captured["seed"] == 42
+
+    def test_generate_passes_completion_kwargs_cannot_override_model(
+        self, monkeypatch, llm_response_factory
+    ):
+        captured = {}
+
+        def _dummy_completion(**kwargs):
+            captured.update(kwargs)
+            return llm_response_factory()
+
+        monkeypatch.setattr("mesa_llm.module_llm.completion", _dummy_completion)
+        llm = ModuleLLM(
+            llm_model="openai/gpt-4o",
+            completion_kwargs={"model": "openai/wrong"},
+        )
+        llm.generate(prompt="Hello")
+        assert captured["model"] == "openai/gpt-4o"
+
+    @pytest.mark.asyncio
+    async def test_agenerate_passes_completion_kwargs(
+        self, monkeypatch, llm_response_factory
+    ):
+        captured = {}
+
+        async def _dummy_acompletion(**kwargs):
+            captured.update(kwargs)
+            return llm_response_factory()
+
+        monkeypatch.setattr("mesa_llm.module_llm.acompletion", _dummy_acompletion)
+        llm = ModuleLLM(
+            llm_model="openai/gpt-4o",
+            completion_kwargs={"temperature": 0.3, "seed": 42},
+        )
+        await llm.agenerate(prompt="Hello")
+        assert captured["temperature"] == 0.3
+        assert captured["seed"] == 42
+
+    def test_completion_kwargs_are_copied(self):
+        settings = {"temperature": 0.3}
+        llm = ModuleLLM(llm_model="openai/gpt-4o", completion_kwargs=settings)
+        settings["temperature"] = 1.0
+        assert llm.completion_kwargs["temperature"] == 0.3

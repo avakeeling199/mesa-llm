@@ -182,6 +182,10 @@ class LLMAgent(Agent):
             Explicit actions exposed to this agent. ``None`` and ``[]`` expose
             no actions; pass an explicit action list or action-set factory to
             opt in to action capabilities.
+        completion_kwargs (dict | None): Optional extra arguments passed to
+            LiteLLM, such as ``temperature`` or ``seed``. Used for both the
+            agent's LLM and its memory's LLM. Internal keys like ``model``
+            and ``messages`` always take priority.
 
     Attributes:
         llm (ModuleLLM): The internal LLM interface used by the agent.
@@ -200,6 +204,7 @@ class LLMAgent(Agent):
         api_base: str | None = None,
         tools: list[Callable | str] | tuple[Callable | str, ...] | None = None,
         actions: list[Callable | str] | tuple[Callable | str, ...] | None = None,
+        completion_kwargs: dict | None = None,
     ):
         try:
             super().__init__(model=model)
@@ -207,7 +212,10 @@ class LLMAgent(Agent):
             self.model = model
             self.step_prompt = step_prompt
             self.llm = ModuleLLM(
-                llm_model=llm_model, system_prompt=system_prompt, api_base=api_base
+                llm_model=llm_model,
+                system_prompt=system_prompt,
+                api_base=api_base,
+                completion_kwargs=completion_kwargs,
             )
 
             self.memory = STLTMemory(
@@ -216,6 +224,7 @@ class LLMAgent(Agent):
                 consolidation_capacity=2,
                 llm_model=llm_model,
                 api_base=api_base,
+                completion_kwargs=completion_kwargs,
             )
 
             self._tool_manager = ToolManager(tools=tools)

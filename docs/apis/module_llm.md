@@ -52,6 +52,24 @@ llm = ModuleLLM(
 
 The `api_base` parameter is supported across all layers of Mesa-LLM: `ModuleLLM`, `LLMAgent`, and all `Memory` subclasses (`STLTMemory`, `EpisodicMemory`, `LongTermMemory`).
 
+## Sampling Parameters
+
+To control how the LLM generates responses (e.g., for reproducible runs or a temperature sensitivity analysis), pass sampling parameters with the `completion_kwargs` parameter. They are passed straight to LiteLLM, so any parameter it supports works (`temperature`, `seed`, `top_p`, `max_tokens`, ...):
+
+```python
+from mesa_llm.module_llm import ModuleLLM
+
+llm = ModuleLLM(
+   llm_model="ollama_chat/llama3.2",
+   system_prompt="You are a helpful agent.",
+   completion_kwargs={"temperature": 0.3, "seed": 33},
+)
+```
+
+> **Note:** `seed` support depends on the provider, so setting it does not guarantee identical outputs across runs. Mesa-LLM's internal arguments (`model`, `messages`, `tools`, `tool_choice`, `response_format`) always take priority over values in `completion_kwargs`.
+
+The `completion_kwargs` parameter is supported by `ModuleLLM`, `LLMAgent`, and the `Memory` subclass that use an LLM (`STLTMemory`, `EpisodicMemory`, `LongTermMemory`). When set on `LLMAgent`, it applies to both the agent's LLM and its memory's LLM.
+
 ## Tool Integration
 
 For agent workflows, configure tools on `LLMAgent` instead of constructing a
